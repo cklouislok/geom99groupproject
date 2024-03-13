@@ -28,21 +28,21 @@
 
     ], function (esriConfig, Map, MapView, FeatureLayer) {
 
-      esriConfig.apiKey = "";
+      esriConfig.apiKey = "AAPKe129fa0d558e45bd933c2d9bc247516bna1Wdg3j6A1WflwncTUNCVPlG_sS4aoCBu57yXVTmXVoC0rRmDSlnhHS_Af_Knbb";
 
       const map = new Map({
-        basemap: "streets" // basemap styles service
+        basemap: "hybrid" // basemap styles service
       });
 
       const view = new MapView({
         container: "viewDiv",
         map: map,
-        center: [-118.80543, 34.02700], // Longitude, latitude
+        center: [-79.3478967526811, 43.71677498117361], // Longitude, latitude
         zoom: 12
       });
 
       // Create a UI with the filter expressions
-      const sqlExpressions = ["Choose a SQL where clause...", "Roll_LandValue < 200000", "TaxRateArea = 10853", "Bedrooms5 > 0", "UseType = 'Residential'", "Roll_RealEstateExemp > 0"];
+      const sqlExpressions = ["Choose a SQL where clause...", "ECYPTAPOP > 100000"];
 
       // UI
       const selectFilter = document.createElement("select");
@@ -60,11 +60,11 @@
 
       // Add a feature layer to map with all features visible on client (no filter)
       const featureLayer = new FeatureLayer({
-        url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/LA_County_Parcels/FeatureServer/0",
+        url: "https://services1.arcgis.com/pMeXRvgWClLJZr3s/arcgis/rest/services/clok_flemingcollege_ca_Fleming__dda85c72dc5d48dd/FeatureServer/0",
         outFields: ["*"],
         popupTemplate: {
-          title: "{UseType}",
-          content: "Description: {UseDescription}. Land value: {Roll_LandValue}"
+          title: "{SITE_NAME}",
+          content: "Population: {ECYPTAPOP}"
         },
         definitionExpression: "1=0"
       });
