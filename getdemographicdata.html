@@ -108,30 +108,30 @@
         });
 
         function getDemographicData(city, point) {
-
-          // Request demographic data
-          arcgisRest
-            .queryDemographicData({
-              studyAreas: [
-                {
-                  geometry: {
-                    x: point.longitude,
-                    y: point.latitude
-                  }
-                }
-              ],
-              authentication: authentication
-            })
-
-            .then((response) => {
-              if (
-                response.results[0].value.FeatureSet.length > 0 &&
-                response.results[0].value.FeatureSet[0].features.length > 0
-              ) {
-                const attributes = response.results[0].value.FeatureSet[0].features[0].attributes;
-              }
-            });
-
+            arcgisRest
+                .queryDemographicData({
+                    studyAreas: [{
+                        geometry: {
+                            x: point.longitude,
+                            y: point.latitude
+                        }
+                    }],
+                    authentication: authentication
+                })
+                .then((response) => {
+                    if (
+                        response.results[0].value.FeatureSet.length > 0 &&
+                        response.results[0].value.FeatureSet[0].features.length > 0
+                    ) {
+                        const attributes = response.results[0].value.FeatureSet[0].features[0].attributes;
+                        showData(city, attributes, point); // Call showData here to display the demographic data
+                    } else {
+                        console.log("No demographic data found.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching demographic data:", error);
+                });
         }
 
         function showData(city, attributes, point) {
