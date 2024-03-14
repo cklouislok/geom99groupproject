@@ -93,7 +93,7 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial13/FeatureServer/6
 ### Library
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/28
 
-## Living
+## Food Service
 ### Supermaket - point;
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial26/FeatureServer/4
 ### Food bank - point;
