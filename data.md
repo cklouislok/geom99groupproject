@@ -63,7 +63,7 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/21
 ### Clinics/Health Centers – point;  
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/12
 ### Cooling center - point;
-https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer
+https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/3
 
 ## Transport 
 ### Public transit stations (subway, bus, streetcar) - point; 
