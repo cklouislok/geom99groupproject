@@ -70,6 +70,12 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/3
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/1
 ### Public transit network - line
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/9
+### TTC Bus Route - line
+https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/10
+### TTC Subway Route - line
+https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/11
+### TTC Streetcar Route - line
+https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/12
 ### Pedestrian network - line
 Walkability (pedestrian network density) - line --> neighborhood; 
 ### Cycling network - line
