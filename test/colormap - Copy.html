@@ -113,6 +113,14 @@
                         digitSeparator: true,
                         places: 0
                       }
+                    },
+                    {
+                      fieldName: "POPULATION_2023",
+                      label: "Living Space per 100,000 population",
+                      format: {
+                        digitSeparator: true,
+                        places: 0
+                      }
                     }
                   ]
                 }
@@ -135,7 +143,12 @@
           // generate rounded arcade expression when user
           // selects a field name
           const getValueExpression = (field) => {
-            return "$feature." + field;
+            if (field === "POPULATION_2023") {
+              return "Round( ( $feature.POPULATION_2023 / $feature.Shape_Area ) * 100, 1)"
+            } else {
+                return "$feature." + field;
+                // return "Round( ( $feature." + field + "), 1)";
+            }
           };
 
           const generateRenderer = async () => {
@@ -271,7 +284,7 @@
   <body>
     <div id="viewDiv"></div>
     <div id="infoDiv" class="esri-widget">
-      Select Field:
+      Select Crime Type:
       <select id="field-select" class="esri-widget">
         <option value="ASSAULT_RATE_2023" selected>Assault</option>
         <option value="AUTOTHEFT_RATE_2023">Auto Theft</option>
@@ -280,6 +293,7 @@
         <option value="ROBBERY_RATE_2023">Robbery</option>
         <option value="SHOOTING_RATE_2023">Shooting</option>
         <option value="THEFTOVER_RATE_2023">Theft Over $5,000</option>
+        <option value="POPULATION_2023">Population Density</option>
       </select>
       Classification:
       <select id="class-select" class="esri-widget">
