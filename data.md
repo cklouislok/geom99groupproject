@@ -3,7 +3,7 @@
 ## Neighborhood boundary
 
 ## Public Safety 
-### Neighborhood crime rates per 100,000
+### Neighborhood crime rates per 100,000 - using
 https://services.arcgis.com/S9th0jAJ7bqgIRjw/ArcGIS/rest/services/Neighbourhood_Crime_Rates_Open_Data/FeatureServer/0
 https://data.torontopolice.on.ca/datasets/TorontoPS::neighbourhood-crime-rates-open-data/about
 ### Homicide - point --> neighborhood; 
@@ -50,7 +50,7 @@ Median household income – neighborhood;
 ## Education 
 ### Education level – neighborhood 
 
-### Schools (public, Catholic, univerisities, colleges, private and adult learning facilitites – point --> neighborhood; - fixed
+### Schools (public, Catholic, univerisities, colleges, private and adult learning facilitites – point --> neighborhood; - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/17
 ### Toronto District School Board
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/18
@@ -60,7 +60,7 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/18
 ## Health 
 ### Hospitals – point; 
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/21
-### Clinics/Health Centers – point;  
+### Clinics/Health Centers – point; - duplicate
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/12
 ### Cooling center - point;
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/3
@@ -88,11 +88,11 @@ https://services.arcgis.com/S9th0jAJ7bqgIRjw/ArcGIS/rest/services/KSI/FeatureSer
 https://data.torontopolice.on.ca/datasets/TorontoPS::ksi/about
 
 ## Environment/Recreation 
-### Treed area - polygon (very large dateset)
+### Treed area - polygon (very large dateset) - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial3/FeatureServer/9
 ### City park (green space) - polygon;
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial27/FeatureServer/3
-### Parks and community centers - point - fixed
+### Parks and community centers - point - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial13/FeatureServer/77
 ### Community recreation center - point (subset of parks and community centers)
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial13/FeatureServer/6
@@ -100,7 +100,7 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial13/FeatureServer/6
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/28
 
 ## Food Service
-### Supermaket - point; - fixed
+### Supermaket - point; - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial26/FeatureServer/4
-### Food bank - point;
+### Food bank - point; - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial26/FeatureServer/50
