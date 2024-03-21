@@ -149,7 +149,7 @@
               classificationMethod: classificationMethod,
               numClasses: parseInt(numClassesInput.value),
               legendOptions: {
-                title: fieldLabel + "Rate per 100,000 population"
+                title: fieldLabel + " per 100,000 population"
               }
             };
 
@@ -272,18 +272,18 @@
     <div id="infoDiv" class="esri-widget">
       Select Field:
       <select id="field-select" class="esri-widget">
-        <option value="ASSAULT_RATE_2023">Assault Rate</option>
-        <option value="AUTOTHEFT_RATE_2023" selected>Auto Theft Rate</option>
-        <option value="BREAKENTER_RATE_2023">Break and Enter Rate</option>
-        <option value="HOMICIDE_RATE_2023">Homicide Rate</option>
-        <option value="ROBBERY_RATE_2023">Robbery Rate</option>
-        <option value="SHOOTING_RATE_2023">Shooting Rate</option>
-        <option value="THEFTOVER_RATE_2023">Theft Over $5,000 Rate</option>
+        <option value="ASSAULT_RATE_2023" selected>Assault</option>
+        <option value="AUTOTHEFT_RATE_2023">Auto Theft</option>
+        <option value="BREAKENTER_RATE_2023">Break and Enter</option>
+        <option value="HOMICIDE_RATE_2023">Homicide</option>
+        <option value="ROBBERY_RATE_2023">Robbery</option>
+        <option value="SHOOTING_RATE_2023">Shooting</option>
+        <option value="THEFTOVER_RATE_2023">Theft Over $5,000</option>
       </select>
       Classification:
       <select id="class-select" class="esri-widget">
-        <option value="equal-interval" selected>Equal interval</option>
-        <option value="quantile">Quantile</option>
+        <option value="equal-interval">Equal interval</option>
+        <option value="quantile" selected>Quantile</option>
         <option value="natural-breaks">Natual Breaks</option>
         <option value="manual">Manual</option>
       </select>
