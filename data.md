@@ -50,7 +50,7 @@ Median household income – neighborhood;
 ## Education 
 ### Education level – neighborhood 
 
-### Schools (public, Catholic, univerisities, colleges, private and adult learning facilitites – point --> neighborhood; 
+### Schools (public, Catholic, univerisities, colleges, private and adult learning facilitites – point --> neighborhood; - fixed
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/17
 ### Toronto District School Board
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/18
@@ -66,19 +66,19 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/12
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/3
 
 ## Transport 
-### Public transit stations (subway, bus, streetcar) - point; 
+### Public transit stations (subway, bus, streetcar) - point; - fixed
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/1
 ### Public transit network - line
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/9
-### TTC Bus Route - line
+### TTC Bus Route - line - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/10
-### TTC Subway Route - line
+### TTC Subway Route - line - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/11
-### TTC Streetcar Route - line
+### TTC Streetcar Route - line - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/12
 ### Pedestrian network - line
 Walkability (pedestrian network density) - line --> neighborhood; 
-### Cycling network - line
+### Cycling network - line - duplicated
 Bikeability (cycling network/bikeway density) - line --> neighborhood;
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial2/FeatureServer/2
 ### Electrical vehicle charging station
@@ -92,15 +92,15 @@ https://data.torontopolice.on.ca/datasets/TorontoPS::ksi/about
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial3/FeatureServer/9
 ### City park (green space) - polygon;
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial27/FeatureServer/3
-### Parks and community centers - point
+### Parks and community centers - point - fixed
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial13/FeatureServer/77
 ### Community recreation center - point (subset of parks and community centers)
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial13/FeatureServer/6
-### Library
+### Library - broken, could not fix
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/28
 
 ## Food Service
-### Supermaket - point;
+### Supermaket - point; - fixed
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial26/FeatureServer/4
 ### Food bank - point;
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial26/FeatureServer/50
