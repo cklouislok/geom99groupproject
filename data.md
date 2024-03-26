@@ -58,7 +58,7 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial28/FeatureServer/18
 (too large)
 
 ## Health 
-### Hospitals – point; 
+### Hospitals – point; - duplicate
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/21
 ### Clinics/Health Centers – point; - duplicate
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/12
