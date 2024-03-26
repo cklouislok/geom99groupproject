@@ -66,7 +66,7 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/12
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial10/FeatureServer/3
 
 ## Transport 
-### Public transit stations (subway, bus, streetcar) - point; - fixed
+### Public transit stations (subway, bus, streetcar) - point; - duplicated
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/1
 ### Public transit network - line
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/9
@@ -78,7 +78,7 @@ https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/11
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial7/FeatureServer/12
 ### Pedestrian network - line
 Walkability (pedestrian network density) - line --> neighborhood; 
-### Cycling network - line - duplicated
+### Bikeway - line - duplicated
 Bikeability (cycling network/bikeway density) - line --> neighborhood;
 https://gis.toronto.ca/arcgis/rest/services/cot_geospatial2/FeatureServer/2
 ### Electrical vehicle charging station
