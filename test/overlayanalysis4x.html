@@ -1,0 +1,219 @@
+<!-- Reference for Translation from 3.X to 4.X https://developers.arcgis.com/javascript/latest/functionality-matrix/ -->
+<!-- The attempt to translate the sample 3.X codes to 4.X is not completed, and will not be proceed further. -->
+<!-- Codes that are commented out are the source codes of the 3.X example -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Customized Map: T-Rex vs. Pac-man</title>
+  <style>
+    html, body, #mapDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+    #results{
+      bottom: 50px;
+      right: 20px;
+      width: 275px;
+    }
+    #title{
+      text-align: center;
+    }
+    #myChart{
+      padding-left: 10px;
+    }    
+    .mainStyle{
+      position: absolute;
+      z-index: 99;
+      background-color: black;
+      color: cornsilk;
+      border-radius: 8px;
+      padding: 15px;
+      opacity: 0.8;
+    }
+    .pvt{
+      color: #99F095;
+    }
+    .pub{
+      color: #8A8A8A;
+    }
+  </style>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.28/"></script>
+  <script>
+
+  // Adapted from ArcGIS Developers Tutorial "Add a point, line, and polygon" at https://developers.arcgis.com/javascript/latest/tutorials/add-a-point-line-and-polygon/
+  
+  // Load required modules
+  require([
+    "esri/Map",
+    "esri/views/MapView",
+	  "esri/layers/FeatureLayer",
+    "esri/renderers/SimpleRenderer",
+    "esri/widgets/Sketch/SketchViewModel",
+    "esri/Graphic",
+    "esri/layers/GraphicsLayer"
+    ], function(Map, MapView, FeatureLayer, SimpleRenderer, SketchViewModel, Graphic, GraphicsLayer) {
+
+  // Create Basemap
+  const myMap = new Map({
+    basemap: "streets" // basemap styles service
+  });
+
+  // Create MapView
+  const view = new MapView({
+    map: myMap,
+    center: [-79.39010230171802, 43.718919762463564], //Longitude, latitude
+    zoom: 10,
+    container: "mapDiv"
+  });
+ 
+  // Import Feature Layer from AGOL/GIS Server
+  const treeLayer = new FeatureLayer({
+    url: "https://services1.arcgis.com/pMeXRvgWClLJZr3s/arcgis/rest/services/Treed_Area/FeatureServer/0",
+    opacity: 0.3
+	});
+  const cityWardLayer = new FeatureLayer({
+    url: "https://gis.toronto.ca/arcgis/rest/services/cot_geospatial/FeatureServer/0",
+    opacity: 0
+  });
+	
+  // https://developers.arcgis.com/javascript/latest/api-reference/esri-renderers-SimpleRenderer.html#properties-summary
+  // var pvtRenderer = new SimpleRenderer(new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_NULL, new Color("black"), 0), new Color("red")));
+  const treedRenderer = {
+    type: "simple",
+    symbol: {
+      type: "simple-fill",
+      color: "red",
+      style: "solid",
+      outline: {
+        color: "black",
+        width: 0
+      }
+    }
+  };
+
+  // landLyr.setRenderer(pvtRenderer);
+  treeLayer.renderer = treedRenderer;
+
+  // Add multiple feature layer to map view
+  // https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html
+  myMap.addMany([treeLayer, cityWardLayer]);
+
+  // Layer symbology translation
+  // https://developers.arcgis.com/javascript/latest/api-reference/esri-renderers-SimpleRenderer.html#properties-summary
+  // var buffSym = new SimpleFillSymbol(SimpleFillSymbol.STYLE_NULL, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255, 255, 255, 1]), 3), null);
+  // var buffSymFade = new SimpleFillSymbol(SimpleFillSymbol.STYLE_NULL, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255, 255, 255, 0.4]), 10), null);
+  // var privateSym = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_NULL, new Color([0, 0, 0]), 0), new Color([138, 138, 138, 0.7]));
+  // var publicSym = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_NULL, new Color([0, 0, 0]), 0), new Color([161, 255, 156, 0.7]));
+  // var update = 0;
+
+
+  const bufferSymbol = {
+    type: "simple-fill",
+    color: "null",
+    style: "none",
+    outline: {
+      color: "white",
+      opacity: 1,
+      width: 3
+    }
+  };
+
+  const bufferSymbolFade = {
+    type: "simple-fill",
+    color: "null",
+    style: "none",
+    outline: {
+      color: "white",
+      opacity: 0.4,
+      width: 10
+    }
+  };
+
+  const nonTreedSymbol = {
+    type: "simple-fill",
+    color: [138, 138, 138],
+    opacity: 0.7,
+    style: "solid",
+    outline: {
+      color: "black",
+      opacity: 0,
+      width: 0
+    }
+  };
+  
+  const treedSymbol = {
+    type: "simple-fill",
+    color: [161, 255, 156],
+    opacity: 0.7,
+    style: "solid",
+    outline: {
+      color: "black",
+      opacity: 0,
+      width: 0
+    }
+  };
+
+  // Add myMap event handlers translation
+  // https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#events
+  // https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#event-click
+  // on(map, "click", createBuffer);
+  // on(map, "mouse-drag", createBuffer);
+
+  myMap.on("click", createBuffer);
+  myMap.on("drag", createBuffer);
+
+  // Translate "update-end"
+  // https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/equivelent-event-to-update-end-in-4-4/m-p/293551#M26922
+  // https://odoe.net/blog/quick-tip-arcgis-api-4-js-stuff-ready/
+  // https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html
+  // on(map, "update-end", function(){
+  //   update++;
+  //   if(update === 1){
+  //     var fakeEvt = {};
+  //     fakeEvt.mapPoint = map.extent.getCenter();
+  //     createBuffer(fakeEvt);  
+  //   }
+  // });
+
+  myMap.then(() => {
+    watchUtils.whenFalse(myMap, "updating", () => {
+      const fakeEvt = {
+        mapPoint: map.extent.center
+      };
+      createBuffer(fakeEvt);
+    })
+  });
+
+  // Draw on mapview
+  // https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Sketch-SketchViewModel.html
+  // var drawPolygon = new Draw(map, { showTooltips: true }); 
+  const mySketchViewModel = new SketchViewModel({
+    view: view
+  });
+
+
+  });
+  
+</script>
+</head>
+<body>
+  <div id="mapDiv">
+    <div class="mainStyle" id="results"><h2 id="title">Sensitive Land</h2>
+    <canvas id="myChart" width="250" height="250"></canvas><br><br>
+    <span class="pvt">Treed Area: <span id="privatePer"></span></span><br>
+    <span class="pub">Non-Treed Area: <span id="publicPer"></span></span>
+    <br><br>
+    Click or drag on the map to view treed areas within 1 kilometer of the mouse click.
+    Hover over the pie chart to view the area of land type within the 1-kilometer buffer. 
+    <br><br><input type="radio" name="operation" id="buffOpt" checked>View category by map click
+    <br><br><input type="radio" name="operation" id="drawOpt">View category by polygon   
+    <br><br><input type="radio" name="operation" id="navOpt">Navigate Map 
+    </div>
+  </div>
+</body>
+</html>
