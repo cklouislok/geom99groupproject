@@ -1,0 +1,462 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Aggregate Spatial Statistics - Schools </title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script type="module" src="https://js.arcgis.com/calcite-components/2.5.1/calcite.esm.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.5.1/calcite.css"/>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.29/"></script>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+          padding: 0;
+          margin: 0;
+          height: 100%;
+          width: 100%;
+      }
+
+      calcite-shell-panel {
+        --calcite-shell-panel-max-width: 345px;
+        --calcite-shell-panel-min-width: 345px;
+      }
+
+      .content-container {
+        overflow-x: hidden;
+      }
+
+      .esri-feature {
+        letter-spacing: 0em;
+        line-height: 1.55rem;
+        font-feature-settings: "liga"1, "calt"0;
+        background: #fff;
+        padding: 1em;
+      }
+    </style>
+    <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer",
+      "esri/widgets/Legend",
+      "esri/widgets/Expand",
+      "esri/widgets/Feature",
+      "esri/core/reactiveUtils"
+    ], (Map, MapView, FeatureLayer, Legend, Expand, Feature, reactiveUtils) =>
+      (async () => {
+
+        // Create chart object
+        // Change fieldname to match with dataset
+        // statsField was designed to calculate the area of polygon features
+        // In school point layer, there is no area data, so the OBJECTID field is replaced for testing
+        let chart;
+        let groupField = "MUNICIPALITY";
+        let statsField = "OBJECTID";
+
+        // Create feature layer
+        // Change const name
+        // Change URL to Toronto school feature layer
+        // Change blendMode
+        // Change effect
+        // Chnage title
+        const myLayer = new FeatureLayer({
+          url: "https://services1.arcgis.com/pMeXRvgWClLJZr3s/arcgis/rest/services/School/FeatureServer/0",
+          outFields: ["*"],
+          blendMode: "darken",
+          effect: "drop-shadow(3px, 3px, 3px)",
+          title: "Schools by Municipalities"
+        });
+
+        // Create map
+        // Change const name
+        // Change basemap style
+        const myMap = new Map({
+          basemap: "streets",
+          layers: [myLayer]
+        });
+
+        // Create map view
+        // Change const name
+        // Change scale
+        // Change map center
+        const myMapView = new MapView({
+          container: "viewDiv",
+          map: myMap,
+          scale: 200000,
+          center: [-79.5201023, 43.7189197],
+          padding: {
+            right: 345
+          },
+          constraints: {
+            minScale: 300000
+          }
+        });
+
+        // Create legend button
+        // Legend button is collapsed by default and will be expanded when click
+        // https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Expand.html
+        const legendExpand = new Expand({
+          content: new Legend({
+            view: myMapView
+          }),
+          expanded: false,
+          expandIcon: "legend",
+          expandTooltip: "View Legend"
+        });
+        
+        // Place the legend button on top left
+        myMapView.ui.add(legendExpand, "top-left");
+
+        // Provide graphic to a new instance of a Feature widget
+        const feature = new Feature({
+          // graphic: graphic,
+          map: myMapView.map,
+          spatialReference: myMapView.spatialReference,
+          visible: false
+        });
+
+        // Place the feature object on bottom left
+        myMapView.ui.add(feature, "bottom-left");
+
+        // Ensure the mapView and featureLayer finish loading before next steps
+        // https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#whenLayerView
+        const layerView = await myMapView.whenLayerView(myLayer);
+        // Wait until layerView has finished updating
+        // https://developers.arcgis.com/javascript/latest/api-reference/esri-core-reactiveUtils.html
+        await reactiveUtils.whenOnce(() => !layerView.updating);
+
+        // Initialize empty array
+        const aggregateForestDataByRegions = [];
+        // Call the runStats() function. It will not proceed further until runStats() finishes execution
+        await runStats();
+
+        // function runs once after when the app loads and runs stats query
+        // on the national forests layer to get count, total acres of forests
+        // in each region. It will also return convex-hull for each region so that
+        // they can be used to show the convex-hull of features in each stats group.
+        async function runStats() {
+
+            // In sample code, the sum of area is calculated
+            // In school layer, there is no area data, so the OBJECTID field is replaced for testing
+          const consumeStatsByRegion = {
+            onStatisticField: statsField,
+            outStatisticFieldName: "totalSumStatsField",
+            statisticType: "sum"
+          };
+
+            // Change const name and outStatisticFiledName
+          const myFeatureInRegion = {
+            onStatisticField: "OBJECTID",
+            outStatisticFieldName: "myFeatureCountStatsField",
+            statisticType: "count"
+          };
+
+            // Convex hull is a method of GeometryEngine, which stands for the smallest convex polygon that encloses a group of geometries/vertices
+            // https://developers.arcgis.com/javascript/latest/api-reference/esri-geometry-geometryEngine.html#convexHull
+          const aggregatedConvex = {
+            statisticType: "convex-hull-aggregate",
+            outStatisticFieldName: "aggregateConvexHull"
+          };
+
+            // Create a query object
+          // https://developers.arcgis.com/javascript/latest/api-reference/esri-rest-support-Query.html
+          const query = myLayer.createQuery();
+            // Specify the field by which the query results will be grouped
+          query.groupByFieldsForStatistics = [groupField];
+          query.orderByFields = [`${groupField} desc`];
+            // Specify an array of statistical calculation to be performed: count and convex hull
+          // https://developers.arcgis.com/javascript/latest/api-reference/esri-rest-support-Query.html#outStatistics
+          query.outStatistics = [
+            consumeStatsByRegion,
+            myFeatureInRegion,
+            aggregatedConvex
+          ];
+
+          // Execute the query on the feature layer
+          const statsResults = await layerView.queryFeatures(query);
+
+            // Iterate throught the stats results, get the result
+          const regions = statsResults.features.map(function (feature, i) {
+            return feature.attributes[groupField];
+          });
+
+          // Create chart data objects for result of every feature
+          const chartData = statsResults.features.map(function (feature, i) {
+            const region = {
+              extent: feature.aggregateGeometries.aggregateConvexHull,
+              region: feature.attributes[groupField],
+              count: feature.attributes.myFeatureCountStatsField,
+              totalFeatureStats: feature.attributes.totalSumStatsField
+            };
+            // Add the region item to the end of the aggregateSchoolDataByRegions collection
+            aggregateForestDataByRegions.push(region);
+            return feature.attributes.totalSumStatsField;
+          });
+          const chartBlock = document.getElementById("chart-block");
+          chartBlock.loading = false;
+            // Call the updateChart function, and pass the stats results into it
+          updateChart(regions, chartData);
+        }
+
+        let currentGreatestFeature = null;
+        let previousRegion = "";
+
+        // Add addEventListener to listen to a change event on the checkbox element
+        // When the box is checked on and off it will toggle the popup on and off.
+        const factSection = document.getElementById("factSection");
+        factSection.addEventListener("calciteBlockSectionToggle", (event) => {
+          handleFeaturePopup();
+        });
+        const resultBlock = document.getElementById("resultsHeading");
+        const clearAction = document.getElementById("clearAction");
+
+        // this function is called when user hovers over the donut chart
+        // it will run stats on the region user is hovering over
+        // get the number of forests in the region and get the feature with the highest value in the selected attribute
+        function getStatsByRegion(data) {
+          // run the query only when user is hovering over a new region on the chart
+          if (data.region !== previousRegion) {
+            resultBlock.heading = `Region ${data.region}`;
+            resultBlock.disabled = false;
+            resultBlock.open = true;
+            clearAction.icon = "x";
+            clearAction.disabled = false;
+            clearAction.addEventListener("click", () => clearStatsInfo());
+
+            // Create a query object to find the feature with the greatest number in the selected attribute
+            const queryGreatestFeature = myLayer.createQuery();
+            queryGreatestFeature.set({
+              geometry: data.extent,
+              orderByFields: [`${statsField} desc`],
+              returnGeometry: true,
+              num: 1
+            });
+
+            const totalSumAttribute = parseInt(data.totalFeatureStats).toLocaleString("en-US");
+
+            // query for the selected region's forests for region specific stats
+            layerView.queryFeatures(queryGreatestFeature).then(async (results) => {
+              if (results.features.length) {
+                document.getElementById(
+                  "attributeSum"
+                ).innerHTML = `<b>${totalSumAttribute}</b>`;
+                document.getElementById(
+                  "featureCount"
+                ).innerHTML = `<b>${data.count}</b>`;
+
+                // First item in the descending list is the greatest feature
+                currentGreatestFeature = results.features[0];
+                if (factSection.open) {
+                  await handleFeaturePopup();
+                }
+
+                const card = document.createElement("calcite-card");
+                const cardTitle = document.createElement("span");
+                cardTitle.slot = "title";
+                cardTitle.innerHTML = currentGreatestFeature.attributes.NAME;
+
+                const cardSubtitle = document.createElement("span");
+                cardSubtitle.slot = "subtitle";
+                cardSubtitle.innerHTML = `${currentGreatestFeature.attributes.OBJECTID.toLocaleString("en-US")} units`;
+
+                const button = document.createElement("calcite-button");
+                button.innerHTML = `Visit ${currentGreatestFeature.attributes.NAME}`;
+                button.iconEnd = `launch`;
+                button.target = "_blank";
+                button.width = "full";
+                button.value = currentGreatestFeature;
+                button.href = currentGreatestFeature.attributes.url;
+                button.slot = "footer-trailing";
+
+                factSection.innerHTML = "";
+                factSection.text = `Highlight greatest OBJECTID in region ${data.region}`;
+                card.appendChild(button);
+                card.appendChild(cardTitle);
+                card.appendChild(cardSubtitle);
+                factSection.appendChild(card);
+              }
+            });
+          }
+          previousRegion = data.region;
+        }
+
+        // this function is called once after the aggregate spatial statistics runs
+        // show the total acres of forests in each region in the chart
+        function updateChart(regions, chartData) {
+          // Get the canvas element and render the chart in it
+          const canvasElement = document.getElementById("chart");
+          chart = new Chart(canvasElement.getContext("2d"), {
+            type: "doughnut",
+            data: {
+              labels: regions,
+              datasets: [
+                {
+                  backgroundColor: [
+                    "#ed5151",
+                    "#149ece",
+                    "#a7c636",
+                    "#9e559c",
+                    "#fc921f",
+                    "#ffde3e"    
+                  ],
+                  borderWidth: 0,
+                  data: chartData
+                }
+              ]
+            },
+            options: {
+              responsive: false,
+              legend: {
+                display: false
+              },
+              title: {
+                display: false
+              },
+              tooltips: {
+                callbacks: {
+                  label: (tooltipItem, data) => {
+                    const sumAttribute =
+                      data.datasets[tooltipItem.datasetIndex].data[
+                        tooltipItem.index
+                      ];
+                    return (
+                      "Region: " + data.labels[tooltipItem.index] + " Total sumAttribute: " + parseInt(sumAttribute).toLocaleString("en-US")
+                    );
+                  }
+                }
+              }
+            }
+          });
+
+          async function updateMapForSelectedRegion(data) {
+            myMapView.graphics.removeAll();
+            myMapView.graphics.add({
+              geometry: data.extent,
+              symbol: {
+                type: "simple-fill",
+                color: [0, 0, 0, 0],
+                outline: {
+                  width: "5px",
+                  color: "yellow"
+                }
+              }
+            });
+            getStatsByRegion(data);
+
+            layerView.featureEffect = {
+              filter: {
+                where: `${groupField} = '${data.region}'`
+              },
+              excludedEffect: "blur(1.5pt) opacity(0.3) grayscale(7)",
+              includedEffect: "drop-shadow(7pt 7pt 7pt rgba(200, 15, 50, 0.5))"
+            };
+          }
+
+
+          // Add the convex hull of grouped forests for that region
+          // set a featureffect on the layerview
+          // run stats on forests of the clicked region
+          canvasElement.addEventListener("mousemove", async () => {
+            const data = await getRegionFromChart(event);
+            if (data) {
+              await updateMapForSelectedRegion(data);
+            }
+          });
+        }
+
+
+        // runs when user clicks on the largest forest stats
+        let highlight;
+        async function handleFeaturePopup() {
+          if (currentGreatestFeature && factSection.open) {
+            if (!feature.visible) {
+              feature.visible = true;
+              feature.graphic = currentGreatestFeature;
+              highlight = layerView.highlight(currentGreatestFeature);
+            }
+
+            if (feature.graphic && feature.graphic.attributes.OBJECTID !== currentGreatestFeature.attributes.OBJECTID){
+              highlight && highlight.remove();
+              feature.graphic = currentGreatestFeature;
+              highlight = layerView.highlight(currentGreatestFeature);
+            }
+          } else {
+            feature.visible = false;
+            highlight && highlight.remove();
+          }
+        }
+
+        // clear out region related graphics and stats when user is not hovering over the chart
+        function clearStatsInfo() {
+          layerView.featureEffect = null;
+          highlight && highlight.remove();
+          feature.visible = false;
+          myMapView.graphics.removeAll();
+          resultBlock.heading = `No region selected`;
+          resultBlock.disabled = true;
+          resultBlock.open = false;
+          clearAction.icon = "blank";
+          clearAction.disabled = true;
+          clearAction.addEventListener("click", () => clearStatsInfo());
+          factSection.open = false;
+        }
+
+        // called when user hovers over the donut chart
+        async function getRegionFromChart(event) {
+          const activePoints = chart.getElementsAtEvent(event);
+          let selectedRegion = null;
+          if (activePoints[0]) {
+            const chartData = activePoints[0]["_chart"].config.data;
+            const idx = activePoints[0]["_index"];
+
+            const label = chartData.labels[idx];
+            myLabel = label;
+            const value = chartData.datasets[0].data[idx];
+
+            aggregateForestDataByRegions.forEach((data) => {
+              if (data.region === label) {
+                selectedRegion = data;
+              }
+            });
+          }
+          return selectedRegion;
+        }
+      })());
+    </script>
+</head>
+
+<body>
+  <calcite-shell>
+    <div id="viewDiv"></div>
+    <calcite-shell-panel slot="panel-end" width-scale="">
+      <calcite-panel heading="Total sumFeature by region">
+        <calcite-block open loading id="chart-block">
+          <canvas id="chart" height="250" width="315" style="margin: 0 auto 1rem"></canvas>
+          <calcite-notice active width="full" scale="s">
+              <span slot="title">Instructions</span>
+              <div slot="message">
+                  Hover over the donut chart to see facts about schools in that
+                  region.
+              </div>
+          </calcite-notice>
+        </calcite-block>
+        <calcite-block disabled id="resultsHeading" heading="No region selected" summary="Forest facts">
+          <calcite-action disabled id="clearAction" slot="control" text="Clear" icon="blank">
+          </calcite-action>
+          <calcite-label layout="inline-space-between">Schools<span id="featureCount"></span></calcite-label>
+          <calcite-label layout="inline-space-between">sumAttribute<span id="attributeSum"></span></calcite-label>
+          <calcite-block-section id="factSection" text="Highlight greatest OBJECTID" toggle-display="switch">
+          </calcite-block-section>
+        </calcite-block>
+    </calcite-panel>
+    </calcite-shell-panel>
+  </calcite-shell>
+  </body>
+</html>
